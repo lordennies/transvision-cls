@@ -20,6 +20,6 @@ class Welcome extends Backend_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('welcome_message');
+		$this->site->view('index');
 	}
 }
