@@ -1,5 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+define('EXT', '.php');
+
+/* Masukkan semua file yang ada di core untuk diautoload */
+function __autoload($class) {
+	if (file_exists(APPPATH."core/".strtolower($class).EXT)) {
+		include_once(APPPATH."core/".strtolower($class).EXT);
+	}
+}
 
 /*
 |--------------------------------------------------------------------------
