@@ -9,7 +9,7 @@ class Backend_Controller extends MY_Controller {
 	function __construct() {
 		parent::__construct();
 
-		$this->load->helper(array('template_helper'));
+		$this->load->helper(array());
 		$this->load->library(array());
 		$this->load->model(array());
 
