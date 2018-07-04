@@ -13,9 +13,9 @@ class User_model extends MY_Model {
 
 	public $rules = array(
 		'username' => array(
-            'field' => 'username',
-            'label' => 'Username',
-            'rules' => 'trim|required'
+			'field' => 'username',
+			'label' => 'Username',
+			'rules' => 'trim|required'
 		), 
 		'password' => array(
 			'field' => 'password', 

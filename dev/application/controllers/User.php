@@ -27,16 +27,17 @@ class User extends Backend_Controller {
 		if ($this->form_validation->run() == false) {	
 			$this->site->view('login');
         } else {
-			$login_data = array(
-				'user_id' => $this->user_detail->user_id,
-		        'username' => $post['username'],
-		        'group' => $this->user_detail->group,
-		        'email' => $this->user_detail->email,
-			);						
+        	$login_data = array(
+        		'user_id' => $this->user_detail->user_id,
+        		'username' => $post['username'],
+        		'group' => $this->user_detail->group,
+        		'email' => $this->user_detail->email,
+        		'logged_in' => true
+        	);
 
-			$this->session->set_userdata($login_data);
-			
-			redirect(set_url('peminjaman'));
+        	$this->session->set_userdata($login_data);
+
+        	redirect(set_url('peminjaman'));
         }
 	}
 
@@ -46,10 +47,10 @@ class User extends Backend_Controller {
 	}
 
 	public function password_check($str) {
-    	$user_detail = $this->user_detail;
+		$user_detail = $this->user_detail;
 
     	if (@$user_detail->password == crypt($str, @$user_detail->password)) {
-			return true;
+    		return true;
 		} else if (@$user_detail->password) {
 			$this->form_validation->set_message('password_check', 'Password anda salah.');
 			return false;
