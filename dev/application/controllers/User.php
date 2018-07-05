@@ -12,6 +12,11 @@ class User extends Backend_Controller {
 		parent::__construct();
 	}
 
+	public function index() {
+		$data = array();
+		$this->site->view('user', $data);
+	}
+
 	public function login()	{
 		$post = $this->input->post(null, true);
 		
@@ -26,19 +31,19 @@ class User extends Backend_Controller {
 
 		if ($this->form_validation->run() == false) {	
 			$this->site->view('login');
-        } else {
-        	$login_data = array(
-        		'user_id' => $this->user_detail->user_id,
-        		'username' => $post['username'],
-        		'group' => $this->user_detail->group,
-        		'email' => $this->user_detail->email,
-        		'logged_in' => true
-        	);
+		} else {
+			$login_data = array(
+				'user_id' => $this->user_detail->user_id,
+				'username' => $post['username'],
+				'group' => $this->user_detail->group,
+				'email' => $this->user_detail->email,
+				'logged_in' => true
+			);
 
-        	$this->session->set_userdata($login_data);
+			$this->session->set_userdata($login_data);
 
-        	redirect(set_url('peminjaman'));
-        }
+			redirect(set_url('peminjaman'));
+		}
 	}
 
 	public function logout() {

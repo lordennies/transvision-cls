@@ -10,8 +10,8 @@
       				<i class="icon-file"></i><h3>Daftar Peminjaman</h3>
       			</div>
       			<div class="widget-content">
-      				
-      			</div>
+              
+            </div>
       		</div>
       	</div>
       </div>
