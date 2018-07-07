@@ -70,4 +70,37 @@ $(function() {
             }
         });
     });
+
+    ambil_peminjaman(null, false);
+
+
+    /* KUMPULAN FUNCTION */
+
+    function ambil_peminjaman(hal_aktif, scrolltop) {
+        if ($('table#tbl-peminjaman').length > 0) {
+            $.ajax('http://'+host+path+'/action/ambil', {
+                dataType: 'json',
+                type: 'POST',
+                success: function(data) {
+                    $('table#tbl-peminjaman tbody tr').remove();
+                    $.each(data.record, function(index, element) {
+                        $('table#tbl-peminjaman').find('tbody').append(
+                            '<tr>'+
+                                '<td>Michael</td>'+
+                                '<td>'+element.tujuan+'</td>'+
+                                '<td>'+element.keperluan+'</td>'+
+                                '<td>'+element.jum_penumpang+'</td>'+
+                                '<td>'+element.tgl_pemakaian+'</td>'+
+                                '<td>'+element.status_req+'</td>'+
+                                '<td width="16%" class="td-actions">'+
+                                    '<a href="peminjaman#edit?id='+element.peminjaman_id+'" class="link-edit btn btn-small btn-info"><i class="btn-icon-only icon-pencil"></i> Edit</a>'+
+                                    '<a href="peminjaman#hapus?id='+element.peminjaman_id+'" class="btn btn-invert btn-small btn-info"><i class="btn-icon-only icon-remove" id="hapus_1"></i> Hapus</a>'+
+                                '</td>'+
+                            '</tr>'
+                        )
+                    });
+                }
+            });
+        }
+    }
 });

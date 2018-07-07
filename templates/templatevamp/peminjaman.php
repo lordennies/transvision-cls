@@ -19,6 +19,7 @@
                                             <th>Keperluan</th>
                                             <th>Jum. Penumpang</th>
                                             <th>Tanggal Pemakaian</th>
+                                            <th>Status</th>
                                             <th class="td-actions"></th>
                                         </tr>
                                     </thead>
@@ -29,6 +30,7 @@
                                             <td>Dismantle</td>
                                             <td>5</td>
                                             <td>25 Juli 2018</td>
+                                            <td>Diizinkan</td>
                                             <td width="16%" class="td-actions">
                                                 <a href="<?=set_url('peminjaman#edit?id=1');?>" class="link-edit btn btn-small btn-info"><i class="btn-icon-only icon-pencil"></i> Edit</a>
                                                 <a href="<?=set_url('peminjaman#hapus?id=1');?>" class="btn btn-invert btn-small btn-info"><i class="btn-icon-only icon-remove" id="hapus_1"></i> Hapus</a>

@@ -17,6 +17,8 @@ class Peminjaman extends Backend_Controller {
 	}
 
 	public function action($param) {
+		global $SConfig;
+
 		if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 			if ($param == 'tambah') {
 				$rules = $this->Peminjaman_model->rules;
@@ -41,6 +43,19 @@ class Peminjaman extends Backend_Controller {
 				}
 
 				echo json_encode($result);
+			} else if ($param == 'ambil') {
+				$total_rows = $this->Peminjaman_model->count();
+				$offset = null;
+
+				$record = $this->Peminjaman_model->get_by(null, $SConfig->_backend_perpage, $offset);
+
+				echo json_encode(
+					array(
+						'total_rows' => $total_rows,
+						'perpage' => $SConfig->_backend_perpage,
+						'record' => $record
+					)
+				);
 			}
 		}
 	}
