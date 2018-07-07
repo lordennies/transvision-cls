@@ -8,15 +8,27 @@
                         <div class="widget">
                             <div class="widget-header">
                                 <i class="icon-file"></i><h3>Daftar Peminjaman</h3>
+                                <a class="btn btn-large btn-primary" href="<?=set_url('peminjaman#tambah');?>">Tambah Peminjaman</a>
                             </div>
                             <div class="widget-content">
-                                <table id="tbl-artikel" class="table table-striped table-bordered">
+                                <table id="tbl-peminjaman" class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr class="">
+                                            <th>Nama Peminjam</th>
+                                            <th>Tujuan</th>
+                                            <th>Keperluan</th>
+                                            <th>Jum. Penumpang</th>
+                                            <th>Tanggal Pemakaian</th>
+                                            <th class="td-actions"></th>
+                                        </tr>
+                                    </thead>
                                     <tbody>
                                         <tr>
-                                            <td><a class="link-edit" href="<?=set_url('peminjaman#edit?id=1');?>">Danang</a> <strong></strong></td>
-                                            <td><span class="value">Pekalongan</span></td>
-                                            <td><span class="value">Dismantle</span></td>
-                                            <td><span class="value">25 Juli 2018</span></td>
+                                            <td>Danang</td>
+                                            <td>Pekalongan</td>
+                                            <td>Dismantle</td>
+                                            <td>5</td>
+                                            <td>25 Juli 2018</td>
                                             <td width="16%" class="td-actions">
                                                 <a href="<?=set_url('peminjaman#edit?id=1');?>" class="link-edit btn btn-small btn-info"><i class="btn-icon-only icon-pencil"></i> Edit</a>
                                                 <a href="<?=set_url('peminjaman#hapus?id=1');?>" class="btn btn-invert btn-small btn-info"><i class="btn-icon-only icon-remove" id="hapus_1"></i> Hapus</a>
@@ -39,19 +51,20 @@
         </div>
 
         <div class="modal-body">
-            <form role="form" id="form-user" action="tambah">
+            <form role="form" id="form-peminjaman" action="tambah">
                 <div class="form-group">
-                    <input class="input-block-level" type="text" id="post_title" name="post_title" placeholder="Tuliskan Judul Artikel Disini">
-                    <textarea class="form-control input-block-level" placeholer="Message" name="post_content" rows="20" id="post_content"></textarea>
+                    <input class="input-block-level" type="text" id="tujuan" name="tujuan" placeholder="Tujuan">
+                    <input class="input-block-level" type="text" id="keperluan" name="keperluan" placeholder="Keperluan">
+                    <input class="input-block-level" type="text" id="jum_penumpang" name="jum_penumpang" placeholder="Jumlah Penumpang">
+                    <input class="input-block-level" type="text" id="tgl_pemakaian" name="tgl_pemakaian" placeholder="Tanggal Pemakaian">
                 </div>
-                <input type="hidden" name="mass_action_type" id="mass_action_type"/>
-                <input type="hidden" name="post_id" id="post_id"/>
+                <input type="hidden" name="peminjaman_id" id="peminjaman_id"/>
             </form>
         </div>
 
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Tutup</button>
-            <button class="btn btn-primary" id="submit-user">Tambah</button>
+            <button class="btn btn-primary" id="submit-peminjaman">Tambah</button>
         </div>
     </div>
 
