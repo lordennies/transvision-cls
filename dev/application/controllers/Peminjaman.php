@@ -44,8 +44,14 @@ class Peminjaman extends Backend_Controller {
 
 				echo json_encode($result);
 			} else if ($param == 'ambil') {
+				$post = $this->input->post(null, true);
+
 				$total_rows = $this->Peminjaman_model->count();
 				$offset = null;
+
+				if (!empty($post['hal_aktif']) && $post['hal_aktif'] > 1) {
+					$offset = ($post['hal_aktif'] - 1) * $SConfig->_backend_perpage;
+				}
 
 				$record = $this->Peminjaman_model->get_by(null, $SConfig->_backend_perpage, $offset);
 

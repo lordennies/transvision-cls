@@ -13,13 +13,13 @@
                             <div class="widget-content">
                                 <table id="tbl-peminjaman" class="table table-striped table-bordered">
                                     <thead>
-                                        <tr class="">
-                                            <th>Nama Peminjam</th>
-                                            <th>Tujuan</th>
-                                            <th>Keperluan</th>
-                                            <th>Jum. Penumpang</th>
-                                            <th>Tanggal Pemakaian</th>
-                                            <th>Status</th>
+                                        <tr>
+                                            <th class="text-center">Peminjam</th>
+                                            <th class="text-center">Tujuan</th>
+                                            <th class="text-center">Keperluan</th>
+                                            <th class="text-center">Penumpang</th>
+                                            <th class="text-center">Tgl Pemakaian</th>
+                                            <th class="text-center">Status</th>
                                             <th class="td-actions"></th>
                                         </tr>
                                     </thead>
@@ -37,7 +37,11 @@
                                             </td>
                                         </tr>
                                     </tbody>
-                                </table>  
+                                </table>
+
+                                <div class="controls pull-right">
+                                    <ul id="pagination-peminjaman" class="pagination"></ul>
+                                </div>
                             </div><!-- /widget-content -->
                         </div><!-- /widget -->
                     </div><!-- /span12 -->
@@ -66,7 +70,7 @@
 
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Tutup</button>
-            <button class="btn btn-primary" id="submit-peminjaman">Tambah</button>
+            <button class="btn btn-info" id="submit-peminjaman">Tambah</button>
         </div>
     </div>
 

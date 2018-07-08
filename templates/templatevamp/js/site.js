@@ -27,20 +27,34 @@ $(function() {
                 $('#myModal .modal-body').prepend('<p id="hapus-notif">Apakah Anda yakin akan menghapus?</p>');
             }
             $('#myModal').modal('show');
-        } else if (hash == 'ambil') {
-
+        } else if (hash.search('ambil') == 0) {
+            if (path.search('/peminjaman') > 0) {
+                var hal_aktif = null;
+                var hash = getUrlVars();
+                if (hash['hal']) {
+                    hal_aktif = hash['hal'];
+                }
+                ambil_peminjaman(hal_aktif, true);
+                $("ul#pagination-peminjaman li a:contains('"+hal_aktif+"')").parents().addClass('active').siblings().removeClass('active');
+            }
         }
     });
     $(window).trigger('hashchange');
+
     $('#myModal').on('hidden', function() {
         window.history.pushState(null, null, path);
         $('#myModal').removeClass('big-modal');
         $('#myModal #hapus-notif').remove();
-        $('#myModal form').find("input[type=text], textarea").val("");
+        $('#myModal form').find("input[type=text]").val("");
         $('#myModal form').show();
     });
 
-    /* BACKEND BAGIAN PEMINJAMAN */
+    moment.locale('id');
+
+    /* 
+     * BACKEND BAGIAN PEMINJAMAN 
+     *
+     */
     $(document).on('click', '#submit-peminjaman', function(eve) {
         eve.preventDefault();
 
@@ -53,6 +67,8 @@ $(function() {
             data: datatosend,
             success: function(data) {
                 if (data.status == 'success') {
+                    ambil_peminjaman(null, false);
+
                     $('#myModal').modal('hide');
                     $('div.widget-content').prepend(
                         '<div class="control-group">'+
@@ -72,35 +88,68 @@ $(function() {
     });
 
     ambil_peminjaman(null, false);
-
-
-    /* KUMPULAN FUNCTION */
-
-    function ambil_peminjaman(hal_aktif, scrolltop) {
-        if ($('table#tbl-peminjaman').length > 0) {
-            $.ajax('http://'+host+path+'/action/ambil', {
-                dataType: 'json',
-                type: 'POST',
-                success: function(data) {
-                    $('table#tbl-peminjaman tbody tr').remove();
-                    $.each(data.record, function(index, element) {
-                        $('table#tbl-peminjaman').find('tbody').append(
-                            '<tr>'+
-                                '<td>Michael</td>'+
-                                '<td>'+element.tujuan+'</td>'+
-                                '<td>'+element.keperluan+'</td>'+
-                                '<td>'+element.jum_penumpang+'</td>'+
-                                '<td>'+element.tgl_pemakaian+'</td>'+
-                                '<td>'+element.status_req+'</td>'+
-                                '<td width="16%" class="td-actions">'+
-                                    '<a href="peminjaman#edit?id='+element.peminjaman_id+'" class="link-edit btn btn-small btn-info"><i class="btn-icon-only icon-pencil"></i> Edit</a>'+
-                                    '<a href="peminjaman#hapus?id='+element.peminjaman_id+'" class="btn btn-invert btn-small btn-info"><i class="btn-icon-only icon-remove" id="hapus_1"></i> Hapus</a>'+
-                                '</td>'+
-                            '</tr>'
-                        )
-                    });
-                }
-            });
-        }
-    }
 });
+
+/* =================================================== */
+/*                  KUMPULAN FUNCTION                  */
+/* =================================================== */
+
+function ambil_peminjaman(hal_aktif, scrolltop) {
+    if ($('table#tbl-peminjaman').length > 0) {
+        $.ajax('http://'+host+path+'/action/ambil', {
+            dataType: 'json',
+            type: 'POST',
+            data: { hal_aktif:hal_aktif },
+            success: function(data) {
+                $('table#tbl-peminjaman tbody tr').remove();
+                $.each(data.record, function(index, element) {
+                    $('table#tbl-peminjaman').find('tbody').append(
+                        '<tr>'+
+                            '<td>Michael</td>'+
+                            '<td>'+element.tujuan+'</td>'+
+                            '<td>'+element.keperluan+'</td>'+
+                            '<td class="text-center">'+element.jum_penumpang+'</td>'+
+                            '<td class="text-center">'+moment(element.tgl_pemakaian).format('L')+'</td>'+
+                            '<td>'+element.status_req+'</td>'+
+                            '<td width="16%" class="td-actions text-center">'+
+                                '<a href="peminjaman#edit?id='+element.peminjaman_id+'" class="link-edit btn btn-small btn-warning"><i class="btn-icon-only icon-pencil"></i> Edit</a> '+
+                                '<a href="peminjaman#hapus?id='+element.peminjaman_id+'" class="btn btn-invert btn-small btn-danger"><i class="btn-icon-only icon-remove" id="hapus_1"></i> Hapus</a>'+
+                            '</td>'+
+                        '</tr>'
+                    )
+                });
+
+                /* BAGIAN UNTUK PAGINATION */
+                var pagination = '';
+                var paging = Math.ceil(data.total_rows/data.perpage);
+
+                if ((!hal_aktif) && ($('ul#pagination-peminjaman li').length == 0)) {
+                    $('ul#pagination-peminjaman li').remove();
+                    for (i = 1; i <= paging; i++) {
+                        pagination = pagination + '<li><a href="peminjaman#ambil?hal='+i+'">'+i+'</a></li>';
+                    }
+                }
+
+                $('ul#pagination-peminjaman').append(pagination);
+                $("ul#pagination-peminjaman li:contains('"+hal_aktif+"')").addClass('active');
+
+                if (scrolltop == true) {
+                    $('body').scrollTop(0);
+                }
+            }
+        });
+    }
+}
+
+function getUrlVars() {
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+
+    for (var i = 0; i < hashes.length; i++) {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+
+    return vars;
+}

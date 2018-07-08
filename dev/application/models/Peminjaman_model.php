@@ -9,6 +9,7 @@ class Peminjaman_model extends MY_Model {
 	protected $_table_name = 'peminjaman';
 	protected $_primary_key = 'peminjaman_id';
 	protected $_order_by = 'peminjaman_id';
+	protected $_order_by_type = 'DESC';
 
 	public $rules = array(
 		'tujuan' => array(

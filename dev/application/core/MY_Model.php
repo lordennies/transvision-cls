@@ -49,7 +49,6 @@ class MY_Model extends CI_Model {
 
 		if ($this->_order_by_type) {
 			$this->db->order_by($this->_order_by, $this->_order_by_type);
-			// $this->db->order_by('ID','DESC');
 		} else {
 			$this->db->order_by($this->_order_by);
 		}
@@ -67,7 +66,7 @@ class MY_Model extends CI_Model {
 		}
 
 		if ($limit && $offset) {
-			$this->db->limit($limit);
+			$this->db->limit($limit, $offset);
 		} else if ($limit) {
 			$this->db->limit($limit);
 		}
