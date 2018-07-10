@@ -96,10 +96,6 @@ class MY_Model extends CI_Model {
 	}
 
 	public function count($where = null) {
-		if (!empty($this->_type)) {
-			$where['post_type'] = $this->_type;
-		}
-
 		if ($where) {
 			$this->db->where($where);
 		}

@@ -13,7 +13,7 @@ class SConfig {
 	var $_database_name = "transvision-cls";
 	var $_table_prefix = "tbl_";
 	var $_cms_name = "Transvision - Car Lending Service";
-	var $_backend_perpage = 3;
+	var $_backend_perpage = 5;
 }
 
 ?>
