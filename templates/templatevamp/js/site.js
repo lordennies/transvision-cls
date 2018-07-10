@@ -28,11 +28,15 @@ $(function() {
             $('#myModal').modal('show');
         } else if (hash.search('hapus') == 0) {
             if (path.search('/peminjaman') > 0) {
+                var peminjaman_id = getUrlVars()['id'];
+                var peminjaman_detail = getJSON('http://'+host+path+'/action/ambil', { id: peminjaman_id });
+                
                 $('#myModal form').hide();
                 $('#myModal .modal-header #myModalLabel').text('Hapus Peminjaman');
                 $('#myModal .modal-footer #submit-peminjaman').text('Hapus');
                 $('#myModal #form-peminjaman').attr('action','hapus');
                 $('#myModal .modal-body').prepend('<p id="hapus-notif">Apakah Anda yakin akan menghapus?</p>');
+                $('#myModal #form-peminjaman #peminjaman_id').val(peminjaman_id);
             }
             $('#myModal').modal('show');
         } else if (hash.search('ambil') == 0) {

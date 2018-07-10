@@ -74,6 +74,14 @@ class Peminjaman extends Backend_Controller {
 						)
 					);
 				}
+			} else if ($param == 'hapus') {
+				$post = $this->input->post(null, true);
+				if (!empty($post['peminjaman_id'])) {
+					$this->Peminjaman_model->delete($post['peminjaman_id']);
+					$result = array('status' => 'success');
+				}
+
+				echo json_encode($result);
 			}
 		}
 	}
