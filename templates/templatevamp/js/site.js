@@ -13,9 +13,17 @@ $(function() {
             $('#myModal').modal('show');
         } else if (hash.search('edit') == 0) {
             if (path.search('/peminjaman') > 0) {
+                var peminjaman_id = getUrlVars()['id'];
+                var peminjaman_detail = getJSON('http://'+host+path+'/action/ambil', { id: peminjaman_id });
+
+                $('#myModal .modal-body #tujuan').val(peminjaman_detail.data['tujuan']);
+                $('#myModal .modal-body #keperluan').val(peminjaman_detail.data['keperluan']);
+                $('#myModal .modal-body #jum_penumpang').val(peminjaman_detail.data['jum_penumpang']);
+                $('#myModal .modal-body #tgl_pemakaian').val(peminjaman_detail.data['tgl_pemakaian']);
                 $('#myModal .modal-header #myModalLabel').text('Edit Peminjaman');
                 $('#myModal .modal-footer #submit-peminjaman').text('Update');
                 $('#myModal #form-peminjaman').attr('action','update');
+                $('#myModal #form-peminjaman #peminjaman_id').val(peminjaman_id);
             }
             $('#myModal').modal('show');
         } else if (hash.search('hapus') == 0) {
@@ -74,7 +82,7 @@ $(function() {
                         '<div class="control-group">'+
                             '<div class="alert alert-success">'+
                                 '<button type="button" class="close" data-dismiss="alert">&times;</button>'+
-                                '<strong>Berhasil !</strong> Peminjaman telah diperbaharui '+
+                                '<strong>Berhasil !</strong> Peminjaman telah diperbarui.'+
                             '</div>'+
                         '</div>'
                     );
@@ -139,6 +147,21 @@ function ambil_peminjaman(hal_aktif, scrolltop) {
             }
         });
     }
+}
+
+function getJSON(url, data) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url : url,
+        data: data,
+        dataType: 'json',
+        global: false,
+        async: false,
+        success:function(msg) {
+
+        }
+
+    }).responseText);
 }
 
 function getUrlVars() {
