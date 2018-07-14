@@ -5,7 +5,7 @@
 */
 class SConfig {
 	var $_site_url = "http://localhost/lordennies/transvision-cls";
-	var $_document_root = "D:/xampp/htdocs/lordennies/transvision-cls";
+	var $_document_root = "C:/xampp/htdocs/lordennies/transvision-cls";
 	var $_host_name = "localhost";
 	var $_site_name = "transvision-cls.com";
 	var $_database_user = "root";
