@@ -16,6 +16,7 @@ $(function() {
                 var peminjaman_id = getUrlVars()['id'];
                 var peminjaman_detail = getJSON('http://'+host+path+'/action/ambil', { id: peminjaman_id });
 
+                $('#myModal .modal-body #peminjam').val(peminjaman_detail.data['username']);
                 $('#myModal .modal-body #tujuan').val(peminjaman_detail.data['tujuan']);
                 $('#myModal .modal-body #keperluan').val(peminjaman_detail.data['keperluan']);
                 $('#myModal .modal-body #jum_penumpang').val(peminjaman_detail.data['jum_penumpang']);
@@ -115,14 +116,15 @@ function ambil_peminjaman(hal_aktif, scrolltop) {
             success: function(data) {
                 $('table#tbl-peminjaman tbody tr').remove();
                 $.each(data.record, function(index, element) {
+                    if (element.status_req == 0) { status = "pending"; }
                     $('table#tbl-peminjaman').find('tbody').append(
                         '<tr>'+
-                            '<td>Michael</td>'+
+                            '<td>'+element.username+'</td>'+
                             '<td>'+element.tujuan+'</td>'+
                             '<td>'+element.keperluan+'</td>'+
                             '<td class="text-center">'+element.jum_penumpang+'</td>'+
                             '<td class="text-center">'+moment(element.tgl_pemakaian).format('L')+'</td>'+
-                            '<td>'+element.status_req+'</td>'+
+                            '<td>'+status+'</td>'+
                             '<td width="16%" class="td-actions text-center">'+
                                 '<a href="peminjaman#edit?id='+element.peminjaman_id+'" class="link-edit btn btn-small btn-warning"><i class="btn-icon-only icon-pencil"></i> Edit</a> '+
                                 '<a href="peminjaman#hapus?id='+element.peminjaman_id+'" class="btn btn-invert btn-small btn-danger"><i class="btn-icon-only icon-remove" id="hapus_1"></i> Hapus</a>'+

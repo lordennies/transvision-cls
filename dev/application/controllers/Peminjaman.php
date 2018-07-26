@@ -54,7 +54,7 @@ class Peminjaman extends Backend_Controller {
 				if (!empty($post['id'])) {
 					echo json_encode(array(
 						'status' => 'success',
-						'data' => $this->Peminjaman_model->get($post['id'])
+						'data' => $this->Peminjaman_model->get_peminjaman_detail($post['id'])
 					));
 				} else {
 					$total_rows = $this->Peminjaman_model->count();
@@ -64,7 +64,7 @@ class Peminjaman extends Backend_Controller {
 						$offset = ($post['hal_aktif'] - 1) * $SConfig->_backend_perpage;
 					}
 
-					$record = $this->Peminjaman_model->get_by(null, $SConfig->_backend_perpage, $offset);
+					$record = $this->Peminjaman_model->get_peminjaman(null, $SConfig->_backend_perpage, $offset);
 
 					echo json_encode(
 						array(

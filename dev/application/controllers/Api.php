@@ -16,11 +16,12 @@ class Api extends CI_Controller {
 
 		$post = $this->input->post(null, true);
 
-		$user = $this->User_model->get_by(array('email' => $post['email'], 'group' => 'user'), 1, null, true);
+		$user = $this->User_model->get_by(array('email' => @$post['email'], 'group' => 'user'), 1, null, true);
 
 		$response = array();
-		if (@$user->password == crypt($post['password'], @$user->password)) {
-			array_push($response, array('status' => 'success'));
+		if (@$user->password == crypt(@$post['password'], @$user->password)) {
+			array_push($response, array('status' => 'success', 'user_id' => $user->user_id, 
+					'username' => $user->username, 'email' => $user->email));
 			echo json_encode($response);
 		} else {
 			array_push($response, array('status' => 'failed', 'message' => 'Email atau password anda salah'));
@@ -45,6 +46,7 @@ class Api extends CI_Controller {
 			$response = array();
 			if ($post['action'] == 'create' || $post['action'] == 'update') {
 				$data = array(
+					'user_id' => $post['user_id'],
 					'tujuan' => $post['tujuan'],
 					'keperluan' => $post['keperluan'],
 					'jum_penumpang' => $post['jum_penumpang'],
@@ -83,6 +85,9 @@ class Api extends CI_Controller {
 				}
 				echo json_encode($result);
 			}
+		} else {
+			$record = $this->Peminjaman_model->get_by();
+	 		echo json_encode($record);
 		}
 	}
 

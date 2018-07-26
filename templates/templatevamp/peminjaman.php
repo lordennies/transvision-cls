@@ -59,10 +59,13 @@
         <div class="modal-body">
             <form role="form" id="form-peminjaman" action="tambah">
                 <div class="form-group">
+                    <input class="input-block-level" type="text" id="peminjam" name="peminjam" placeholder="Peminjam">
                     <input class="input-block-level" type="text" id="tujuan" name="tujuan" placeholder="Tujuan">
                     <input class="input-block-level" type="text" id="keperluan" name="keperluan" placeholder="Keperluan">
                     <input class="input-block-level" type="text" id="jum_penumpang" name="jum_penumpang" placeholder="Jumlah Penumpang">
                     <input class="input-block-level" type="text" id="tgl_pemakaian" name="tgl_pemakaian" placeholder="Tanggal Pemakaian">
+                    <input class="input-block-level" type="text" id="mobil" name="mobil" placeholder="Mobil">
+                    <input class="input-block-level" type="text" id="status" name="status" placeholder="Status">
                 </div>
                 <input type="hidden" name="peminjaman_id" id="peminjaman_id"/>
             </form>
