@@ -58,22 +58,45 @@
 
         <div class="modal-body">
             <form role="form" id="form-peminjaman" action="tambah">
-                <div class="form-group">
-                    <input class="input-block-level" type="text" id="peminjam" name="peminjam" placeholder="Peminjam">
-                    <input class="input-block-level" type="text" id="tujuan" name="tujuan" placeholder="Tujuan">
-                    <input class="input-block-level" type="text" id="keperluan" name="keperluan" placeholder="Keperluan">
-                    <input class="input-block-level" type="text" id="jum_penumpang" name="jum_penumpang" placeholder="Jumlah Penumpang">
-                    <input class="input-block-level" type="text" id="tgl_pemakaian" name="tgl_pemakaian" placeholder="Tanggal Pemakaian">
-                    <input class="input-block-level" type="text" id="mobil" name="mobil" placeholder="Mobil">
-                    <input class="input-block-level" type="text" id="status" name="status" placeholder="Status">
-                </div>
-                <input type="hidden" name="peminjaman_id" id="peminjaman_id"/>
+                <fieldset class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label" for="peminjam">Nama Peminjam</label>
+                        <div class="controls">
+                            <input type="text" name="peminjam" id="peminjam" class="form-control input-block-level" value="" />
+                        </div>
+                        <label class="control-label" for="tujuan">Tujuan</label>
+                        <div class="controls">
+                            <input type="text" name="tujuan" id="tujuan" class="form-control input-block-level" value="" />
+                        </div>
+                        <label class="control-label" for="keperluan">Keperluan</label>
+                        <div class="controls">
+                            <input type="text" name="keperluan" id="keperluan" class="form-control input-block-level" value="" />
+                        </div>
+                        <label class="control-label" for="jum_penumpang">Jumlah Penumpang</label>
+                        <div class="controls">
+                            <input type="text" name="jum_penumpang" id="jum_penumpang" class="form-control input-block-level" value="" />
+                        </div>
+                        <label class="control-label" for="tgl_pemakaian">Keperluan</label>
+                        <div class="controls">
+                            <input type="text" name="tgl_pemakaian" id="tgl_pemakaian" class="form-control input-block-level" value="" />
+                        </div>
+                        <label class="control-label" for="kendaraan">Kendaraan</label>
+                        <div class="controls">
+                            <?=form_dropdown_status();?>
+                        </div>
+                        <label class="control-label" for="status">Status Permohonan</label>
+                        <div class="controls">
+                            <?=form_dropdown_status();?>
+                        </div>
+                    </div>
+                </fieldset>
+                <input type="hidden" name="user_id" id="user_id"/>
             </form>
         </div>
 
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Tutup</button>
-            <button class="btn btn-info" id="submit-peminjaman">Tambah</button>
+            <button class="btn btn-info" id="submit-user">Tambah</button>
         </div>
     </div>
 

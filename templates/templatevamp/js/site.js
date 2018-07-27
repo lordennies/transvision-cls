@@ -9,10 +9,28 @@ $(function() {
                 $('#myModal .modal-header #myModalLabel').text('Tambah Peminjaman');
                 $('#myModal .modal-footer #submit-peminjaman').text('Tambah');
                 $('#myModal #form-peminjaman').attr('action', 'tambah');
+            } else if (path.search('/kendaraan') > 0) {
+                $('#myModal .modal-header #myModalLabel').text('Tambah Kendaraan');
+                $('#myModal .modal-footer #submit-kendaraan').text('Tambah');
+                $('#myModal #form-kendaraan').attr('action', 'tambah');
+            } else if (path.search('/user') > 0) {
+                $('#myModal .modal-header #myModalLabel').text('Tambah User');
+                $('#myModal .modal-footer #submit-user').text('Tambah');
+                $('#myModal #form-user').attr('action', 'tambah');
             }
             $('#myModal').modal('show');
         } else if (hash.search('edit') == 0) {
             if (path.search('/peminjaman') > 0) {
+                /* pilihan kendaraan */
+                var pilihan_kendaraan = getJSON('http://'+host+path+'/ambil', {});
+                $('#kendaraan option').remove();
+                $('#kendaraan').append('<option value="">Pilih Kendaraan</option>');
+                if (pilihan_kendaraan.record) {
+                    $.each(pilihan_kendaraan.record, function(key, value) {
+                        $('#kendaraan').append('<option value="'+value['kendaraan_id']+'">'+value['nama_kendaraan']+'</option>');
+                    });
+                }
+
                 var peminjaman_id = getUrlVars()['id'];
                 var peminjaman_detail = getJSON('http://'+host+path+'/action/ambil', { id: peminjaman_id });
 
@@ -25,18 +43,55 @@ $(function() {
                 $('#myModal .modal-footer #submit-peminjaman').text('Update');
                 $('#myModal #form-peminjaman').attr('action','update');
                 $('#myModal #form-peminjaman #peminjaman_id').val(peminjaman_id);
+            } else if (path.search('/kendaraan') > 0) {
+                var kendaraan_id = getUrlVars()['id'];
+                var kendaraan_detail = getJSON('http://'+host+path+'/action/ambil', { id: kendaraan_id });
+
+                $('#myModal .modal-body #nama_kendaraan').val(kendaraan_detail.data['nama_kendaraan']);
+                $('#myModal .modal-body #no_polisi').val(kendaraan_detail.data['no_polisi']);
+                $('#myModal .modal-body #tipe_kendaraan').val(kendaraan_detail.data['tipe_kendaraan']);
+                $('#myModal .modal-header #myModalLabel').text('Edit Peminjaman');
+                $('#myModal .modal-footer #submit-kendaraan').text('Update');
+                $('#myModal #form-kendaraan').attr('action', 'update');
+                $('#myModal #form-kendaraan #kendaraan_id').val(kendaraan_id);
+            } else if (path.search('/user') > 0) {
+                var user_id = getUrlVars()['id'];
+                var user_detail = getJSON('http://'+host+path+'/action/ambil', { id: user_id });
+
+                $('#myModal .modal-body #username').val(user_detail.data['username']);
+                $('#myModal .modal-body #email').val(user_detail.data['email']);
+                $('#myModal .modal-body #group').val(user_detail.data['group']);
+                $('#myModal .modal-header #myModalLabel').text('Edit User');
+                $('#myModal .modal-footer #submit-user').text('Update');
+                $('#myModal #form-user').attr('action', 'update');
+                $('#myModal #form-user #user_id').val(user_id);
             }
             $('#myModal').modal('show');
         } else if (hash.search('hapus') == 0) {
             if (path.search('/peminjaman') > 0) {
                 var peminjaman_id = getUrlVars()['id'];
-                
                 $('#myModal form').hide();
                 $('#myModal .modal-header #myModalLabel').text('Hapus Peminjaman');
                 $('#myModal .modal-footer #submit-peminjaman').text('Hapus');
                 $('#myModal #form-peminjaman').attr('action', 'hapus');
                 $('#myModal .modal-body').prepend('<p id="hapus-notif">Apakah Anda yakin akan menghapus?</p>');
                 $('#myModal #form-peminjaman #peminjaman_id').val(peminjaman_id);
+            } else if (path.search('/kendaraan') > 0) {
+                var kendaraan_id = getUrlVars()['id'];
+                $('#myModal form').hide();
+                $('#myModal .modal-header #myModalLabel').text('Hapus Kendaraan');
+                $('#myModal .modal-footer #submit-kendaraan').text('Hapus');
+                $('#myModal #form-kendaraan').attr('action', 'hapus');
+                $('#myModal .modal-body').prepend('<p id="hapus-notif">Apakah Anda yakin akan menghapus kendaraan ini?</p>');
+                $('#myModal #form-kendaraan #kendaraan_id').val(kendaraan_id);
+            } else if (path.search('/user') > 0) {
+                var user_id = getUrlVars()['id'];
+                $('#myModal form').hide();
+                $('#myModal .modal-header #myModalLabel').text('Hapus User');
+                $('#myModal .modal-footer #submit-user').text('Hapus');
+                $('#myModal #form-user').attr('action', 'hapus');
+                $('#myModal .modal-body').prepend('<p id="hapus-notif">Apakah Anda yakin akan menghapus user ini?</p>');
+                $('#myModal #form-user #user_id').val(user_id);
             }
             $('#myModal').modal('show');
         } else if (hash.search('ambil') == 0) {
@@ -48,6 +103,22 @@ $(function() {
                 }
                 ambil_peminjaman(hal_aktif, true);
                 $("ul#pagination-peminjaman li a:contains('"+hal_aktif+"')").parents().addClass('active').siblings().removeClass('active');
+            } else if (path.search('/kendaraan') > 0) {
+                var hal_aktif = null;
+                var hash = getUrlVars();
+                if (hash['hal']) {
+                    hal_aktif = hash['hal'];
+                }
+                ambil_kendaraan(hal_aktif, true);
+                $("ul#pagination-kendaraan li a:contains('"+hal_aktif+"')").parents().addClass('active').siblings().removeClass('active');
+            } else if (path.search('/user') > 0) {
+                var hal_aktif = null;
+                var hash = getUrlVars();
+                if (hash['hal']) {
+                    hal_aktif = hash['hal'];
+                }
+                ambil_user(hal_aktif, true);
+                $("ul#pagination-user li a:contains('"+hal_aktif+"')").parents().addClass('active').siblings().removeClass('active');
             }
         }
     });
@@ -56,17 +127,16 @@ $(function() {
 
     $('#myModal').on('hidden', function() {
         window.history.pushState(null, null, path);
-        $('#myModal').removeClass('big-modal');
         $('#myModal #hapus-notif').remove();
-        $('#myModal form').find("input[type=text]").val("");
+        $('#myModal form').find("input[type=text], input[type=hidden], input[type=password], input[type=email]").val("").attr('placeholder', '');
+        $('#myModal form').find("select").prop("selected", false); 
         $('#myModal form').show();
     });
 
     moment.locale('id');
 
     /* 
-     * BACKEND BAGIAN PEMINJAMAN 
-     *
+     * BACKEND BAGIAN PEMINJAMAN
      */
     $(document).on('click', '#submit-peminjaman', function(eve) {
         eve.preventDefault();
@@ -101,6 +171,77 @@ $(function() {
     });
 
     ambil_peminjaman(null, false);
+
+    /* 
+     * BACKEND BAGIAN KENDARAAN
+     */
+    $(document).on('click', '#submit-kendaraan', function(eve) {
+        eve.preventDefault();
+
+        var action = $('#form-kendaraan').attr('action');
+        var datatosend = $('#form-kendaraan').serialize();
+
+        $.ajax('http://'+host+path+'/action/'+action, {
+            dataType: 'json',
+            type: 'POST',
+            data: datatosend,
+            success: function(data) {
+                if (data.status == 'success') {
+                    ambil_kendaraan(null, false);
+
+                    $('#myModal').modal('hide');
+                    $('div.widget-content').prepend(
+                        '<div class="control-group">'+
+                            '<div class="alert alert-success">'+
+                                '<button type="button" class="close" data-dismiss="alert">&times;</button>'+
+                                '<strong>Berhasil !</strong> Kendaraan telah diperbarui.'+
+                            '</div>'+
+                        '</div>'
+                    );
+                } else {
+                    $.each(data.errors, function(key, value) {
+                        $('#'+key).attr('placeholder', value);
+                    });
+                }
+            }
+        });
+    });
+
+    ambil_kendaraan(null, false);
+
+    /* 
+     * BACKEND BAGIAN USER
+     */
+    $(document).on('click', '#submit-user', function(eve) {
+        eve.preventDefault();
+        var action = $('#form-user').attr('action');
+        var datatosend = $('#form-user').serialize();
+        $.ajax('http://'+host+path+'/action/'+action, {
+            dataType: 'json',
+            type: 'POST',
+            data: datatosend,
+            success: function(data) {
+                if (data.status == 'success') {
+                    ambil_user(null, false);
+                    $('#myModal').modal('hide');
+                    $('div.widget-content').prepend(
+                        '<div class="control-group">'+
+                            '<div class="alert alert-success">'+
+                                '<button type="button" class="close" data-dismiss="alert">&times;</button>'+
+                                '<strong>Berhasil !</strong> User telah diperbarui.'+
+                            '</div>'+
+                        '</div>'
+                    );
+                } else {
+                    $.each(data.errors, function(key, value) {
+                        $('#'+key).attr('placeholder', value);
+                    });
+                }
+            }
+        });
+    });
+
+    ambil_user(null, false);
 });
 
 /* =================================================== */
@@ -146,6 +287,94 @@ function ambil_peminjaman(hal_aktif, scrolltop) {
 
                 $('ul#pagination-peminjaman').append(pagination);
                 $("ul#pagination-peminjaman li:contains('"+hal_aktif+"')").addClass('active');
+
+                if (scrolltop == true) {
+                    $('body').scrollTop(0);
+                }
+            }
+        });
+    }
+}
+
+function ambil_kendaraan(hal_aktif, scrolltop) {
+    if ($('table#tbl-kendaraan').length > 0) {
+        $.ajax('http://'+host+path+'/action/ambil', {
+            dataType: 'json',
+            type: 'POST',
+            data: { hal_aktif:hal_aktif },
+            success: function(data) {
+                $('table#tbl-kendaraan tbody tr').remove();
+                $.each(data.record, function(index, element) {
+                    $('table#tbl-kendaraan').find('tbody').append(
+                        '<tr>'+
+                            '<td>'+element.nama_kendaraan+'</td>'+
+                            '<td>'+element.no_polisi+'</td>'+
+                            '<td>'+element.tipe_kendaraan+'</td>'+
+                            '<td width="16%" class="td-actions text-center">'+
+                                '<a href="kendaraan#edit?id='+element.kendaraan_id+'" class="link-edit btn btn-small btn-warning"><i class="btn-icon-only icon-pencil"></i> Edit</a> '+
+                                '<a href="kendaraan#hapus?id='+element.kendaraan_id+'" class="btn btn-invert btn-small btn-danger"><i class="btn-icon-only icon-remove" id="hapus_1"></i> Hapus</a>'+
+                            '</td>'+
+                        '</tr>'
+                    )
+                });
+
+                /* BAGIAN UNTUK PAGINATION */
+                var pagination = '';
+                var paging = Math.ceil(data.total_rows/data.perpage);
+
+                if ((!hal_aktif) && ($('ul#pagination-kendaraan li').length == 0)) {
+                    $('ul#pagination-kendaraan li').remove();
+                    for (i = 1; i <= paging; i++) {
+                        pagination = pagination + '<li><a href="kendaraan#ambil?hal='+i+'">'+i+'</a></li>';
+                    }
+                }
+
+                $('ul#pagination-kendaraan').append(pagination);
+                $("ul#pagination-kendaraan li:contains('"+hal_aktif+"')").addClass('active');
+
+                if (scrolltop == true) {
+                    $('body').scrollTop(0);
+                }
+            }
+        });
+    }
+}
+
+function ambil_user(hal_aktif, scrolltop) {
+    if ($('table#tbl-user').length > 0) {
+        $.ajax('http://'+host+path+'/action/ambil', {
+            dataType: 'json',
+            type: 'POST',
+            data: { hal_aktif:hal_aktif },
+            success: function(data) {
+                $('table#tbl-user tbody tr').remove();
+                $.each(data.record, function(index, element) {
+                    $('table#tbl-user').find('tbody').append(
+                        '<tr>'+
+                            '<td><img src="http://'+host+path.replace('user', 'assets/images/')+'user.png"/> <a class="link-edit" href="user#edit?id='+element.user_id+'">'+element.username+'</a></td>'+
+                            '<td><i class="icon-envelope"></i> <span class="value">'+element.email+'</span></td>'+
+                            '<td><i class="icon-group"></i> <span class="value">'+element.group+'</span></td>'+
+                            '<td width="16%" class="td-actions text-center">'+
+                                '<a href="user#edit?id='+element.user_id+'" class="link-edit btn btn-small btn-warning"><i class="btn-icon-only icon-pencil"></i> Edit</a> '+
+                                '<a href="user#hapus?id='+element.user_id+'" class="btn btn-invert btn-small btn-danger"><i class="btn-icon-only icon-remove" id="hapus_1"></i> Hapus</a>'+
+                            '</td>'+
+                        '</tr>'
+                    )
+                });
+
+                /* BAGIAN UNTUK PAGINATION */
+                var pagination = '';
+                var paging = Math.ceil(data.total_rows/data.perpage);
+
+                if ((!hal_aktif) && ($('ul#pagination-user li').length == 0)) {
+                    $('ul#pagination-user li').remove();
+                    for (i = 1; i <= paging; i++) {
+                        pagination = pagination + '<li><a href="user#ambil?hal='+i+'">'+i+'</a></li>';
+                    }
+                }
+
+                $('ul#pagination-user').append(pagination);
+                $("ul#pagination-user li:contains('"+hal_aktif+"')").addClass('active');
 
                 if (scrolltop == true) {
                     $('body').scrollTop(0);

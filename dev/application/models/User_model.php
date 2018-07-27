@@ -24,6 +24,37 @@ class User_model extends MY_Model {
 		)
 	);
 
+	public $rules_register = array(
+		'username' => array(
+			'field' => 'username',
+            'label' => 'Username',
+            'rules' => 'trim|required|callback_username_check'
+		),
+		'password' => array(
+			'field' => 'password',
+			'label' => 'Password',
+			'rules' => 'trim|required|min_length[5]'
+		),
+		'email' => array(
+            'field' => 'email',
+            'label' => 'Email',
+            'rules' => 'trim|required|valid_email|callback_email_check'
+		),
+	);
+
+	public $rules_update = array(
+		'username' => array(
+            'field' => 'username',
+            'label' => 'Username',
+            'rules' => 'trim|required'
+		),
+		'email' => array(
+            'field' => 'email',
+            'label' => 'Email',
+            'rules' => 'trim|required|valid_email'
+		),
+	);
+
 	function __construct() {
 		parent::__construct();
 	}

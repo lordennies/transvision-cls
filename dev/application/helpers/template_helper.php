@@ -41,4 +41,23 @@ function title() {
 	}
 }
 
+function form_dropdown_status() {
+	$options = array(
+		'' => '-- Pilih status permohonan --',
+		'0'	=> 'Pending',
+		'1'	=> 'Tolak',
+		'2' => 'Setujui'
+	);
+	return form_dropdown('kendaraan', $options, '', 'id="kendaraan"');
+}
+
+function form_dropdown_group() {
+	$options = array(
+		'' => 'Pilih Group',
+		'admin'	=> 'Administrator',
+		'user'	=> 'User'
+	);
+	return form_dropdown('group', $options, '', 'id="group"');
+}
+
 ?>

@@ -51,6 +51,102 @@ class User extends Backend_Controller {
 		redirect(set_url('login'));
 	}
 
+	public function action($param) {
+		global $SConfig;
+		if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+			if ($param == 'tambah' || $param == 'update') {
+				if ($param == 'update') {
+					$rules = $this->User_model->rules_update;
+				} else {
+					$rules = $this->User_model->rules_register;
+				}
+				$this->form_validation->set_rules($rules);
+
+				if ($this->form_validation->run() == true) {
+					$group = 'user';
+					$post = $this->input->post();
+					$data = array(
+						'email' => $post['email'],
+						'username' => $post['username'],
+						'password' => bCrypt($post['password'], 12),
+						'group' => (!empty($post['group'])) ? $group = $post['group'] : $group = '',
+					);
+
+					if ($param == 'update') {
+						unset($data['username']);
+						unset($data['email']);
+
+						if (!empty($post['password'])) {
+							$data['password'] = bCrypt($post['password'], 12);
+						} else {
+							unset($data['password']);
+						}
+
+						$this->User_model->update($data, array('user_id' => $post['user_id']));
+						$getId = $post['user_id'];
+					} else {
+						$getId = $this->User_model->insert($data);
+					}
+
+					$result = array('status' => 'success');
+				} else {
+					$result = array('status' => 'failed', 'errors' => $this->form_validation->error_array());
+				}
+
+				echo json_encode($result);
+			} else if ($param == 'ambil') {
+				$post = $this->input->post();
+				if (!empty($post['id'])) {
+					echo json_encode(array(
+						'status' => 'success',
+						'data' => $this->User_model->get($post['id'])
+					));
+				} else {
+					$total_rows = $this->User_model->count();
+					$offset = null;
+					if (!empty($post['hal_aktif']) && $post['hal_aktif'] > 1) {
+						$offset = ($post['hal_aktif'] - 1) * $SConfig->_backend_perpage;
+					}
+					$record = $this->User_model->get_by(null, $SConfig->_backend_perpage, $offset, false, "user_id, username, group, email");
+					echo json_encode(
+						array(
+							'total_rows' => $total_rows,
+							'perpage' => $SConfig->_backend_perpage,
+							'record' => $record
+						)
+					);
+				}
+			} else if ($param == 'hapus') {
+				$post = $this->input->post();
+				if (!empty($post['user_id'])) {
+					$this->User_model->delete($post['user_id']);
+					$result = array('status' => 'success');
+				}
+				echo json_encode($result);
+			}
+		}
+	}
+
+	public function email_check($str) {
+		/* bisa digunakan untuk mengecek ke dalam database nantinya */
+		if ($this->User_model->count(array('email' => $str)) > 0) {
+            $this->form_validation->set_message('email_check', 'Email sudah digunakan, mohon ganti yang lain.');
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function username_check($str) {
+    	/* bisa digunakan untuk mengecek ke dalam database nantinya */
+    	if ($this->User_model->count(array('username' => $str)) > 0) {
+    		$this->form_validation->set_message('username_check', 'Username sudah digunakan, mohon ganti yang lain.');
+    		return false;
+    	} else {
+    		return true;
+    	}
+    }
+
 	public function password_check($str) {
 		$user_detail = $this->user_detail;
 

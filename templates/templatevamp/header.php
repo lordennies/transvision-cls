@@ -41,6 +41,12 @@
             <div class="container">
                 <ul class="mainnav">
                     <li class="<?=is_active_page_print('peminjaman','active');?>"><a href="<?=set_url('peminjaman');?>"><i class="icon-list-alt"></i><span>Peminjaman</span> </a> </li>
+                    <li class="dropdown <?=is_active_page_print('kendaraan','active');?>"><a href="<?=set_url('kendaraan/index');?>" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-truck"></i><span>Kendaraan</span> <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="<?=set_url('kendaraan');?>">Daftar Kendaraan</a></li>
+                            <li><a href="<?=set_url('kendaraan#tambah');?>">Tambah Kendaraan</a></li>
+                        </ul>
+                    </li>
                     <li class="dropdown <?=is_active_page_print('user','active');?>"><a href="<?=set_url('user/index');?>" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i><span>User</span> <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="<?=set_url('user');?>">Daftar User</a></li>
