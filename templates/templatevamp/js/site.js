@@ -22,14 +22,14 @@ $(function() {
         } else if (hash.search('edit') == 0) {
             if (path.search('/peminjaman') > 0) {
                 /* pilihan kendaraan */
-                var pilihan_kendaraan = getJSON('http://'+host+path+'/ambil', {});
-                $('#kendaraan option').remove();
-                $('#kendaraan').append('<option value="">Pilih Kendaraan</option>');
-                if (pilihan_kendaraan.record) {
-                    $.each(pilihan_kendaraan.record, function(key, value) {
-                        $('#kendaraan').append('<option value="'+value['kendaraan_id']+'">'+value['nama_kendaraan']+'</option>');
-                    });
-                }
+                // var pilihan_kendaraan = getJSON('http://'+host+path+'/ambil', {});
+                // $('#kendaraan option').remove();
+                // $('#kendaraan').append('<option value="">Pilih Kendaraan</option>');
+                // if (pilihan_kendaraan.record) {
+                //     $.each(pilihan_kendaraan.record, function(key, value) {
+                //         $('#kendaraan').append('<option value="'+value['kendaraan_id']+'">'+value['nama_kendaraan']+'</option>');
+                //     });
+                // }
 
                 var peminjaman_id = getUrlVars()['id'];
                 var peminjaman_detail = getJSON('http://'+host+path+'/action/ambil', { id: peminjaman_id });
@@ -120,6 +120,21 @@ $(function() {
                 ambil_user(hal_aktif, true);
                 $("ul#pagination-user li a:contains('"+hal_aktif+"')").parents().addClass('active').siblings().removeClass('active');
             }
+        } else if (hash.search('loc') == 0) {
+            if (path.search('/peminjaman') > 0) {
+
+                $('#myModal form').hide();
+                $('#myModal .modal-header #myModalLabel').text('Lokasi Peminjam');
+                $('#myModal .modal-footer #submit-peminjaman').hide();
+                $('#myModal .modal-body').prepend(
+                    '<div id="myMap" style="height: 450px">'+
+                        '<div id="map" style="width: 100%; height: 100%"></div>'+
+                    '</div>'
+                );
+                $('#myModal').prepend('<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrKbZ9zq1_L-xHXQg_6lHtYBGbFtqV6vI&callback=initMap" async defer></script>');
+            }
+            $('#myModal').addClass('big-modal');
+            $('#myModal').modal('show');
         }
     });
 
@@ -128,6 +143,7 @@ $(function() {
     $('#myModal').on('hidden', function() {
         window.history.pushState(null, null, path);
         $('#myModal #hapus-notif').remove();
+        $('#myModal #myMap').remove();
         $('#myModal form').find("input[type=text], input[type=hidden], input[type=password], input[type=email]").val("").attr('placeholder', '');
         $('#myModal form').find("select").prop("selected", false); 
         $('#myModal form').show();
@@ -266,9 +282,10 @@ function ambil_peminjaman(hal_aktif, scrolltop) {
                             '<td class="text-center">'+element.jum_penumpang+'</td>'+
                             '<td class="text-center">'+moment(element.tgl_pemakaian).format('L')+'</td>'+
                             '<td>'+status+'</td>'+
-                            '<td width="16%" class="td-actions text-center">'+
+                            '<td width="21%" class="td-actions text-center">'+
                                 '<a href="peminjaman#edit?id='+element.peminjaman_id+'" class="link-edit btn btn-small btn-warning"><i class="btn-icon-only icon-pencil"></i> Edit</a> '+
-                                '<a href="peminjaman#hapus?id='+element.peminjaman_id+'" class="btn btn-invert btn-small btn-danger"><i class="btn-icon-only icon-remove" id="hapus_1"></i> Hapus</a>'+
+                                '<a href="peminjaman#hapus?id='+element.peminjaman_id+'" class="btn btn-invert btn-small btn-danger"><i class="btn-icon-only icon-remove" id="hapus_1"></i> Hapus</a> '+
+                                '<a href="peminjaman#loc?id='+element.peminjaman_id+'" class="btn btn-invert btn-small btn-success"><i class="btn-icon-only icon-map-marker"></i> Check</a>'+
                             '</td>'+
                         '</tr>'
                     )
@@ -392,10 +409,9 @@ function getJSON(url, data) {
         dataType: 'json',
         global: false,
         async: false,
-        success:function(msg) {
+        success: function(msg) {
 
         }
-
     }).responseText);
 }
 
@@ -410,4 +426,18 @@ function getUrlVars() {
     }
 
     return vars;
+}
+
+function initMap() {
+    var peminjaman_id = getUrlVars()['id'];
+    var loc = getJSON('http://'+host+path+'/getLoc', { id: peminjaman_id });
+    var latitude = parseFloat(loc.data['lat']);
+    var longitude = parseFloat(loc.data['lng']);
+
+    var posisi = {lat: latitude, lng: longitude}
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 16,
+        center: posisi
+    });
+    var marker = new google.maps.Marker({position: posisi, map: map});
 }

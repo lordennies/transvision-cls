@@ -39,13 +39,19 @@ class Peminjaman_model extends MY_Model {
 	}
 
 	function get_peminjaman($where = null, $limit = null, $offset = null, $single = false, $select = null) {
-		$this->db->join('{PRE}user', '{PRE}'.$this->_table_name.'.user_id = {PRE}user.user_id', 'LEFT');
+		$this->db->select('{PRE}user.username, {PRE}peminjaman.*');
+		$this->db->join('{PRE}user', '{PRE}peminjaman.user_id = {PRE}user.user_id', 'LEFT');
 		return parent::get_by($where, $limit, $offset, $single, $select);
 	}
 
 	function get_peminjaman_detail($id = null) {
 		$this->db->select('{PRE}user.username, {PRE}peminjaman.*');
 		$this->db->join('{PRE}user', '{PRE}peminjaman.user_id = {PRE}user.user_id', 'LEFT');
+		return parent::get($id);
+	}
+
+	function get_loc($id) {
+		$this->db->select('{PRE}peminjaman.lat, {PRE}peminjaman.lng');
 		return parent::get($id);
 	}
 }

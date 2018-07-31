@@ -81,7 +81,7 @@ class Api extends CI_Controller {
 		header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 
 		$post = $this->input->post(null, true);
-		$user = $this->User_model->get(4);
+		$user = $this->User_model->get($post['user_id']);
 
 		if ($user->has_made_req == 0) {
 			echo json_encode(array('status' => 'able'));

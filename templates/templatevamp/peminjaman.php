@@ -90,13 +90,13 @@
                         </div>
                     </div>
                 </fieldset>
-                <input type="hidden" name="user_id" id="user_id"/>
+                <input type="hidden" name="peminjaman_id" id="peminjaman_id"/>
             </form>
         </div>
 
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Tutup</button>
-            <button class="btn btn-info" id="submit-user">Tambah</button>
+            <button class="btn btn-info" id="submit-peminjaman">Tambah</button>
         </div>
     </div>
 
