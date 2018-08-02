@@ -431,8 +431,8 @@ function getUrlVars() {
 function initMap() {
     var peminjaman_id = getUrlVars()['id'];
     var loc = getJSON('http://'+host+path+'/getLoc', { id: peminjaman_id });
-    var latitude = parseFloat(loc.data['lat']);
-    var longitude = parseFloat(loc.data['lng']);
+    var latitude = parseFloat(loc.data[0]['lat']);
+    var longitude = parseFloat(loc.data[0]['long']);
 
     var posisi = {lat: latitude, lng: longitude}
     var map = new google.maps.Map(document.getElementById('map'), {

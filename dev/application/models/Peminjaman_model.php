@@ -51,8 +51,11 @@ class Peminjaman_model extends MY_Model {
 	}
 
 	function get_loc($id) {
-		$this->db->select('{PRE}peminjaman.lat, {PRE}peminjaman.lng');
-		return parent::get($id);
+		$this->db->select('{PRE}route.lat, {PRE}route.long');
+		$this->db->join('{PRE}route', '{PRE}peminjaman.peminjaman_id = {PRE}route.peminjaman_id', 'LEFT');
+		$this->db->where(array('{PRE}route.peminjaman_id' => $id));
+		$method = 'result';
+		return $this->db->get('{PRE}'.$this->_table_name)->$method();
 	}
 }
 
