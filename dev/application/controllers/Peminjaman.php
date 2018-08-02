@@ -86,16 +86,12 @@ class Peminjaman extends Backend_Controller {
 		}
 	}
 
-	public function getLoc() {
-		if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-			$post = $this->input->post(null, true);
+	public function showMap() {
+		$get = $this->input->get(null, true);
 
-			if (!empty($post['id'])) {
-				echo json_encode(array(
-					'status' => 'success',
-					'data' => $this->Peminjaman_model->get_loc($post['id'])
-				));
-			}
+		if (!empty($get['id'])) {
+			$data = array('pos' => $this->Peminjaman_model->get_loc($get['id']));
+			$this->site->view('map', $data);
 		}
 	}
 }

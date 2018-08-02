@@ -156,9 +156,11 @@ $(function() {
      */
     $(document).on('click', '#submit-peminjaman', function(eve) {
         eve.preventDefault();
-
         var action = $('#form-peminjaman').attr('action');
         var datatosend = $('#form-peminjaman').serialize();
+
+        $('#myModal').modal('hide');
+        $('#loadingModal').modal('show');
 
         $.ajax('http://'+host+path+'/action/'+action, {
             dataType: 'json',
@@ -167,8 +169,8 @@ $(function() {
             success: function(data) {
                 if (data.status == 'success') {
                     ambil_peminjaman(null, false);
+                    $('#loadingModal').modal('hide');
 
-                    $('#myModal').modal('hide');
                     $('div.widget-content').prepend(
                         '<div class="control-group">'+
                             '<div class="alert alert-success">'+
@@ -193,9 +195,11 @@ $(function() {
      */
     $(document).on('click', '#submit-kendaraan', function(eve) {
         eve.preventDefault();
-
         var action = $('#form-kendaraan').attr('action');
         var datatosend = $('#form-kendaraan').serialize();
+
+        $('#myModal').modal('hide');
+        $('#loadingModal').modal('show');
 
         $.ajax('http://'+host+path+'/action/'+action, {
             dataType: 'json',
@@ -204,8 +208,8 @@ $(function() {
             success: function(data) {
                 if (data.status == 'success') {
                     ambil_kendaraan(null, false);
+                    $('#loadingModal').modal('hide');
 
-                    $('#myModal').modal('hide');
                     $('div.widget-content').prepend(
                         '<div class="control-group">'+
                             '<div class="alert alert-success">'+
@@ -232,6 +236,10 @@ $(function() {
         eve.preventDefault();
         var action = $('#form-user').attr('action');
         var datatosend = $('#form-user').serialize();
+
+        $('#myModal').modal('hide');
+        $('#loadingModal').modal('show');
+
         $.ajax('http://'+host+path+'/action/'+action, {
             dataType: 'json',
             type: 'POST',
@@ -239,7 +247,8 @@ $(function() {
             success: function(data) {
                 if (data.status == 'success') {
                     ambil_user(null, false);
-                    $('#myModal').modal('hide');
+                    $('#loadingModal').modal('hide');
+
                     $('div.widget-content').prepend(
                         '<div class="control-group">'+
                             '<div class="alert alert-success">'+
@@ -285,7 +294,7 @@ function ambil_peminjaman(hal_aktif, scrolltop) {
                             '<td width="21%" class="td-actions text-center">'+
                                 '<a href="peminjaman#edit?id='+element.peminjaman_id+'" class="link-edit btn btn-small btn-warning"><i class="btn-icon-only icon-pencil"></i> Edit</a> '+
                                 '<a href="peminjaman#hapus?id='+element.peminjaman_id+'" class="btn btn-invert btn-small btn-danger"><i class="btn-icon-only icon-remove" id="hapus_1"></i> Hapus</a> '+
-                                '<a href="peminjaman#loc?id='+element.peminjaman_id+'" class="btn btn-invert btn-small btn-success"><i class="btn-icon-only icon-map-marker"></i> Check</a>'+
+                                '<a href="peminjaman/showMap?id='+element.peminjaman_id+'" target="_blank" class="btn btn-invert btn-small btn-success"><i class="btn-icon-only icon-map-marker"></i> Check</a>'+
                             '</td>'+
                         '</tr>'
                     )
@@ -426,18 +435,4 @@ function getUrlVars() {
     }
 
     return vars;
-}
-
-function initMap() {
-    var peminjaman_id = getUrlVars()['id'];
-    var loc = getJSON('http://'+host+path+'/getLoc', { id: peminjaman_id });
-    var latitude = parseFloat(loc.data[0]['lat']);
-    var longitude = parseFloat(loc.data[0]['long']);
-
-    var posisi = {lat: latitude, lng: longitude}
-    var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16,
-        center: posisi
-    });
-    var marker = new google.maps.Marker({position: posisi, map: map});
 }

@@ -78,4 +78,10 @@
         </div>
     </div>
 
+    <div id="loadingModal" class="modal hide">
+        <div class="modal-header">
+            <h3> Silahkan tunggu sebentar . . .</h3>
+        </div>
+    </div>
+
 <?php get_template('footer') ?>
