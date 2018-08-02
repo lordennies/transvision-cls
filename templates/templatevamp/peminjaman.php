@@ -8,7 +8,7 @@
                         <div class="widget">
                             <div class="widget-header">
                                 <i class="icon-file"></i><h3>Daftar Peminjaman</h3>
-                                <a class="btn btn-large btn-primary" href="<?=set_url('peminjaman#tambah');?>">Tambah Peminjaman</a>
+                                <!-- <a class="btn btn-large btn-primary" href="<?=set_url('peminjaman#tambah');?>">Tambah Peminjaman</a> -->
                             </div>
                             <div class="widget-content">
                                 <table id="tbl-peminjaman" class="table table-striped table-bordered">

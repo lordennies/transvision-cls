@@ -90,7 +90,11 @@ class Peminjaman extends Backend_Controller {
 		$get = $this->input->get(null, true);
 
 		if (!empty($get['id'])) {
-			$data = array('pos' => $this->Peminjaman_model->get_loc($get['id']));
+			$pos = $this->Peminjaman_model->get_loc($get['id']);
+			$data = array(
+				'pos' => $pos,
+				'jum_titik' => sizeof($pos)
+			);
 			$this->site->view('map', $data);
 		}
 	}
