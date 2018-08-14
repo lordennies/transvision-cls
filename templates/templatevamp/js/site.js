@@ -22,14 +22,14 @@ $(function() {
         } else if (hash.search('edit') == 0) {
             if (path.search('/peminjaman') > 0) {
                 /* pilihan kendaraan */
-                // var pilihan_kendaraan = getJSON('http://'+host+path+'/ambil', {});
-                // $('#kendaraan option').remove();
-                // $('#kendaraan').append('<option value="">Pilih Kendaraan</option>');
-                // if (pilihan_kendaraan.record) {
-                //     $.each(pilihan_kendaraan.record, function(key, value) {
-                //         $('#kendaraan').append('<option value="'+value['kendaraan_id']+'">'+value['nama_kendaraan']+'</option>');
-                //     });
-                // }
+                var pilihan_kendaraan = getJSON('http://'+host+path+'/get_kendaraan', {});
+                $('#kendaraan_parent option').remove();
+                $('#kendaraan_parent').append('<option value="">-- Pilih Kendaraan --</option>');
+                if (pilihan_kendaraan.record) {
+                    $.each(pilihan_kendaraan.record, function(key, value) {
+                        $('#kendaraan_parent').append('<option value="'+value['kendaraan_id']+'">'+value['nama_kendaraan']+'</option>');
+                    });
+                }
 
                 var peminjaman_id = getUrlVars()['id'];
                 var peminjaman_detail = getJSON('http://'+host+path+'/action/ambil', { id: peminjaman_id });
@@ -39,9 +39,11 @@ $(function() {
                 $('#myModal .modal-body #keperluan').val(peminjaman_detail.data['keperluan']);
                 $('#myModal .modal-body #jum_penumpang').val(peminjaman_detail.data['jum_penumpang']);
                 $('#myModal .modal-body #tgl_pemakaian').val(peminjaman_detail.data['tgl_pemakaian']);
+                $('#myModal .modal-body #kendaraan_parent option[value ="'+peminjaman_detail.data['kendaraan_id']+'"]').prop('selected', true);
+                $('#myModal .modal-body #status option[value ="'+peminjaman_detail.data['status_req']+'"]').prop('selected', true);
                 $('#myModal .modal-header #myModalLabel').text('Edit Peminjaman');
                 $('#myModal .modal-footer #submit-peminjaman').text('Update');
-                $('#myModal #form-peminjaman').attr('action','update');
+                $('#myModal #form-peminjaman').attr('action', 'update');
                 $('#myModal #form-peminjaman #peminjaman_id').val(peminjaman_id);
             } else if (path.search('/kendaraan') > 0) {
                 var kendaraan_id = getUrlVars()['id'];
@@ -282,7 +284,13 @@ function ambil_peminjaman(hal_aktif, scrolltop) {
             success: function(data) {
                 $('table#tbl-peminjaman tbody tr').remove();
                 $.each(data.record, function(index, element) {
-                    if (element.status_req == 0) { status = "pending"; }
+                    if (element.status_req == 0) { 
+                        status = "pending"; 
+                    } else if (element.status_req == 1) {
+                        status = "disetujui";
+                    } else {
+                        status = "ditolak";
+                    }
                     $('table#tbl-peminjaman').find('tbody').append(
                         '<tr>'+
                             '<td>'+element.username+'</td>'+

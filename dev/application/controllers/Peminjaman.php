@@ -8,7 +8,7 @@ class Peminjaman extends Backend_Controller {
 
 	public function __construct() {
 		parent::__construct();
-		$this->load->model(array('Peminjaman_model'));
+		$this->load->model(array('Peminjaman_model', 'Kendaraan_model'));
 	}
 
 	public function index() {
@@ -30,7 +30,9 @@ class Peminjaman extends Backend_Controller {
 						'tujuan' => $post['tujuan'],
 						'keperluan' => $post['keperluan'],
 						'jum_penumpang' => $post['jum_penumpang'],
-						'tgl_pemakaian' => $post['tgl_pemakaian']
+						'tgl_pemakaian' => $post['tgl_pemakaian'],
+						'kendaraan_id' => $post['kendaraan_parent'],
+						'status_req' => $post['status']
 					);
 
 					if (!empty($post['peminjaman_id'])) {
@@ -83,6 +85,15 @@ class Peminjaman extends Backend_Controller {
 
 				echo json_encode($result);
 			}
+		}
+	}
+
+	public function get_kendaraan() {
+		global $SConfig;
+		if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+			$record = $this->Kendaraan_model->get_by();
+
+			echo json_encode(array('record' => $record));
 		}
 	}
 

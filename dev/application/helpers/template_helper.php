@@ -45,10 +45,10 @@ function form_dropdown_status() {
 	$options = array(
 		'' => '-- Pilih status permohonan --',
 		'0'	=> 'Pending',
-		'1'	=> 'Tolak',
-		'2' => 'Setujui'
+		'1' => 'Setujui',
+		'2'	=> 'Tolak'
 	);
-	return form_dropdown('kendaraan', $options, '', 'id="kendaraan"');
+	return form_dropdown('status', $options, '', 'id="status"');
 }
 
 function form_dropdown_group() {

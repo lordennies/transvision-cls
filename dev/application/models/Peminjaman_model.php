@@ -31,7 +31,7 @@ class Peminjaman_model extends MY_Model {
 			'field' => 'jum_penumpang',
 			'label' => 'Jumlah Penumpang',
 			'rules' => 'trim|required'
-		),
+		)
 	);
 
 	function __construct() {

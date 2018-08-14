@@ -82,7 +82,9 @@
                         </div>
                         <label class="control-label" for="kendaraan">Kendaraan</label>
                         <div class="controls">
-                            <?=form_dropdown_status();?>
+                            <select class="input-block-level" name="kendaraan_parent" id="kendaraan_parent">
+                                <option value="">Pilih Kendaraan</option>
+                            </select>
                         </div>
                         <label class="control-label" for="status">Status Permohonan</label>
                         <div class="controls">

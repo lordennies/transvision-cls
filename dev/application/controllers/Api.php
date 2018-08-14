@@ -112,6 +112,9 @@ class Api extends CI_Controller {
 	}
 
 	public function upload() {
+		global $SConfig;
+		$this->load->model(array('Peminjaman_model'));
+
 		$post = $this->input->post(null, true);
 		$image = $post["image"];
 		if ($image) {
@@ -122,7 +125,11 @@ class Api extends CI_Controller {
 			}
 
 			$target_dir = $target_dir."/".rand()."_".time().".jpeg";
+
+			$image_path = "http://192.168.100.3/lordennies/transvision-cls/$target_dir";
+
 			if (file_put_contents($target_dir, base64_decode($image))) {
+				$this->Peminjaman_model->update(array('km_awal' => $image_path), array('peminjaman_id' => $post['peminjaman_id']));
 				echo json_encode(array('response' => 'Image uploaded successfully'));
 			} else {
 				echo json_encode(array('response' => 'Image upload failed'));
