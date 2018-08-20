@@ -5,30 +5,33 @@ class Api extends CI_Controller {
 
 	public function __construct() {
 		parent::__construct();
+		$this->load->model(array('Peminjaman_model', 'Kendaraan_model', 'User_model'));
 	}
 
 	public function login() {
 		global $SConfig;
-		$this->load->model(array('User_model'));
-
-		header('Access-Control-Allow-Origin: *');
-		header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 
 		$post = $this->input->post(null, true);
 		$user = $this->User_model->get_by(array('email' => @$post['email'], 'group' => 'user'), 1, null, true);
 
 		if (@$user->password == crypt(@$post['password'], @$user->password)) {
-			$response = array('status' => 'success', 'user_id' => $user->user_id, 'email' => $user->email);
+			$login_data = array(
+				'user_id' => $user->user_id,
+				'username' => $user->username,
+				'email' => $user->email,
+				'has_made_req' => $user->has_made_req,
+				'peminjaman_id' => $user->peminjaman_id
+			);
+			$response = array('status' => 'success', 'user' => $login_data);
 			echo json_encode($response);
 		} else {
-			$response = array('status' => 'failed', 'message' => 'Email atau password anda salah.');
+			$response = array('status' => 'failed');
 			echo json_encode($response);
 		}
 	}
 
 	public function pinjam() {
 		global $SConfig;
-		$this->load->model(array('Peminjaman_model', 'User_model'));
 
 		header('Access-Control-Allow-Origin: *');
 		header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
@@ -37,7 +40,6 @@ class Api extends CI_Controller {
 		$post = $this->input->post(null, true);
 
 		if (isset($post['action'])) {
-			$response = array();
 			if ($post['action'] == 'create') {
 				$data = array(
 					'user_id' => $post['user_id'],
@@ -50,12 +52,13 @@ class Api extends CI_Controller {
 				if ($this->Peminjaman_model->insert($data)) {
 					$insert_id = $this->db->insert_id();
 					$has_made_req = array('has_made_req' => 1);
+					$peminjaman_id = array('peminjaman_id' => $insert_id);
 					$this->User_model->update($has_made_req, array('user_id' => $post['user_id']));
-					array_push($response, array('status' => 'success', 'peminjaman_id' => $insert_id));
+					$this->User_model->update($peminjaman_id, array('user_id' => $post['user_id']));
+					echo json_encode(array('status' => 'success', 'peminjaman_id' => $insert_id));
 				} else {
-					array_push($response, array('status' => 'failed'));
+					echo json_encode(array('status' => 'failed'));
 				}
-				echo json_encode($response);
 			} else if ($post['action'] == 'delete') {
 				if ($this->Peminjaman_model->delete($post['id'])) {
 					array_push($response, array('status' => 'success'));
@@ -75,13 +78,9 @@ class Api extends CI_Controller {
 
 	public function hasMadeRequest() {
 		global $SConfig;
-		$this->load->model(array('User_model'));
 
-		header('Access-Control-Allow-Origin: *');
-		header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
-
-		$post = $this->input->post(null, true);
-		$user = $this->User_model->get($post['user_id']);
+		$get = $this->input->get(null, true);
+		$user = $this->User_model->get($get['user_id']);
 
 		if ($user->has_made_req == 0) {
 			echo json_encode(array('status' => 'able'));
@@ -92,10 +91,6 @@ class Api extends CI_Controller {
 
 	public function cekStatusPermohonan() {
 		global $SConfig;
-		$this->load->model(array('User_model', 'Peminjaman_model'));
-
-		header('Access-Control-Allow-Origin: *');
-		header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 
 		$post = $this->input->post(null, true);
 		$peminjaman = $this->Peminjaman_model->get($post['peminjaman_id']);
@@ -113,10 +108,10 @@ class Api extends CI_Controller {
 
 	public function upload() {
 		global $SConfig;
-		$this->load->model(array('Peminjaman_model'));
 
-		$post = $this->input->post(null, true);
+		$post = $this->input->post();
 		$image = $post["image"];
+		$peminjaman_id = $post['peminjaman_id'];
 		if ($image) {
 			$target_dir = "uploads";
 
@@ -125,18 +120,29 @@ class Api extends CI_Controller {
 			}
 
 			$target_dir = $target_dir."/".rand()."_".time().".jpeg";
-
-			$image_path = "http://192.168.100.3/lordennies/transvision-cls/$target_dir";
+			$image_path = "http://192.168.100.7/lordennies/transvision-cls/$target_dir";
+			$data = array('foto_km_awal' => $image_path);
 
 			if (file_put_contents($target_dir, base64_decode($image))) {
-				$this->Peminjaman_model->update(array('km_awal' => $image_path), array('peminjaman_id' => $post['peminjaman_id']));
-				echo json_encode(array('response' => 'Image uploaded successfully'));
+				$this->Peminjaman_model->update($data, array('peminjaman_id' => $peminjaman_id));
+				echo json_encode(array('status' => 'success'));
 			} else {
-				echo json_encode(array('response' => 'Image upload failed'));
+				echo json_encode(array('status' => 'failed'));
 			}
 		} else {
-			echo json_encode(array('response' => 'Image upload failed'));
+			echo json_encode(array('status' => 'failed'));
 		}
+	}
+
+	public function detail() {
+		global $SConfig;
+
+		header('Access-Control-Allow-Origin: *');
+		header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+
+		$post = $this->input->post(null, true);
+		$record = $this->Peminjaman_model->get(1);
+		echo json_encode($record);
 	}
 
 }
